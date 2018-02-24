@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>React Single Page Starter</title>
+    <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    
+    <style>
+        body {
+            font-family: Helvetica;
+            height: 100%;
+            position: fixed;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: : center;
+
+
+            top: 50%;
+            left: 50%;
+            margin-top: -50px;
+            margin-left: -100px;
+        }
+        
+        
+        
+/*
+        .square {
+            border: 1px solid #000;
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            margin: 2px;
+            border-radius: 3px;
+        }
+*/
+        
+        .border-row {
+            border: 1px solid #000
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+/*            margin: 2px;*/
+            border-radius: 3px;
+        }
+        
+        .square {
+            height: 40px;
+            width: 40px;
+            display: inline-block;
+        }
+        
+        
+    </style>
+</head>
+
+<body>
+    <div id="root">
+        <!-- App -->
+    </div>
+
+    <!-- JavaScript -->
+    <script type="text/babel">
+        
+    // class Square extends React.Component {
+//   render() {
+//     return (
+//      // So let us analyze what is happening here and what we can do with this information when this Square class is called what is happening is that we are setting up a click event listener that is what the built in on click function essentially does  and when the button is clicked React nwill call the on click event handler defined in the Squares render method and we know upon the press of the button that this is going to happen due to the reason that this code is wrapped around the button tags therefore we know that this block of code is contained inside the button functionality
+      
+//      // So once this button is clicked the onClick event handler and due to that affect the event handler calls this.props.onClick where the squares props were defined in Board and we are getting those properties once we call the render square function and once we get those properties what we are doing with them is that we are 
+//       <button className="square" onClick={() => this.props.onClick()}>
+//         {this.props.value}
+//       </button>
+//     );
+//   }
+// }
+
+// React actualy supports a smaller syntax and what that means is that when in React if you have a class that is just composed of a render method we can actually make a functioncal component such as this
+function Square(props) {
+  
+  // Key differences to this block of code compared to the original square class that we had is that we now made it it a functional component as oppose to a class component as well as we do not return to props as this.props now that is a function we take in the props argument as a parameter and the we manipulate it that way
+  return (
+    // TODO Where does props.value? come from
+    <button className="square" onClick={props.onClick}>
+      
+      {props.value}
+      </button>
+  );
+}
+
+
+
+
+class Board extends React.Component {
+  
+  // So this is essentially the class for the Board and we know this is a react component due to the fact that the class Board is inheriting from the react component class
+  constructor(props) {
+    super(props);
+    this.state = {
+      squares: Array(9).fill(null),
+      // We are treating this variable that we have created almost like a toggle and what we are doing with this toggle is that we are flipping the boolean value and saving the state
+      xIsNext: true,
+    };
+  }
+    
+    calculateWinner() {
+        // We are creating a function that will calculate the winner therefore we are making an array that can hold all the positions of the winning spots
+      const lines = [[0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+    ];
+
+      for (let i = 0; i < lines.length; i++) {
+          const [a,b,c] = lines[i];
+          if (this.state.squares[a] && this.state.squares[a] === this.state.squares[b] && this.state.squares[a] === this.state.squares[c]) {
+              return this.state.squares[a];
+          }
+      }
+      return null;
+    }
+
+    
+    
+    
+
+//function calculateWinner() {
+    
+//  // We are creating a function that will calculate the winner therefore we are making an array that can hold all the positions of the winning spots
+//  const lines = [[0, 1, 2],
+//[3, 4, 5],
+//[6, 7, 8],
+//[0, 3, 6],
+//[1, 4, 7],
+//[2, 5, 8],
+//[0, 4, 8],
+//[2, 4, 6],
+//];
+//
+//  for (let i = 0; i < lines.length; i++) {
+//      const [a,b,c] = lines[i];
+//      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+//          return squares[a];
+//      }
+//  }
+//  return null;
+//}
+  
+  // This handle click function that we are called and what is happening is that we are passing in an argument called i and on the first line of the function body what we are doing is that we are
+  // creating a constant called squares and we are making a shallow copy of the squares through the slice method therefore we can have a constant that we can manipulate
+  handleClick(i) {
+    const squares = this.state.squares.slice();
+      
+      if (this.calculateWinner(squares) || squares[i]) {
+          return;
+      } 
+    
+    // Since i the argument represents the square on the board that the user has clicked on we set that value to X to signify that the user has clicked on the board
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    // And now we save the state inside the board as oppose to how we were doing it previously which is setting the set in the square idividually which will essentially overwrite the other squares where as if we were to set the state for the whole board we can continue making the game and programatically how we are doing this is that we are calling this set state function and we are passing in the list of squares that we have just previously updated with the current squares list
+    
+    // And we have also stored another key value pair and what this key value pair essentially does is that we are storing xIsNext which is a boolean value that is set to true and then if that is set to true then what we can do from there is set that value to false therefore the value will not be x anymore but we have not declared what that value will be
+    this.setState({squares: squares, 
+       xIsNext: !this.state.xIsNext,
+      });
+  }
+  
+  
+  // What this render square function does is that it now instantiates the square class which will represent a single square and we set the value for the actualy square with the value we set at the square previously and we are setting it with that value  
+  renderSquare(i) {
+    return (
+      <Square
+        value={this.state.squares[i]}
+        onClick={() => this.handleClick(i)}
+      />
+    );
+  }
+    
+
+  render() {
+    
+    // We are creating the constant status and what we are doing with that variable is that we are saying that the next player is if xIsNext is true then we are going to display an X and if the value is false then we are going to display an O it is similar to a boolean expression in python if a value is false then perform this functionality and if the value is false then perform another piece of functionality
+    let status = 'Next player:  ' + (this.state.xIsNext ? "X": "O");
+    const winner = this.calculateWinner(this.state.squares)
+//    let status;
+      if (winner) {
+          status = "Winner " + winner;
+      }
+      
+      else {
+          status = "Next Player " + (this.state.xIsNext ? 'X': 'O');
+      }
+
+    return (
+      <div>
+        <div className="status">{status}</div>
+        <div className="board-row">
+          {this.renderSquare(0)}{this.renderSquare(1)}{this.renderSquare(2)}
+        </div>
+        <div className="board-row">
+          {this.renderSquare(3)}{this.renderSquare(4)}{this.renderSquare(5)}
+        </div>
+        <div className="board-row">
+          {this.renderSquare(6)}{this.renderSquare(7)}{this.renderSquare(8)}
+        </div>
+      </div>
+    );
+  }
+}
+
+class Game extends React.Component {
+  render() {
+    return (
+      <div className="game">
+        <div className="game-board">
+          <Board />
+        </div>
+        <div className="game-info">
+          <div>{/* status */}</div>
+          <ol>{/* TODO */}</ol>
+        </div>
+      </div>
+    );
+  }
+}
+
+// ========================================
+
+ReactDOM.render(
+  <Game />,
+  document.getElementById('root')
+);
+
+       
+    </script>
+</body>
+</html>
+
