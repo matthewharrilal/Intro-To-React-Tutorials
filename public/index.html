@@ -156,6 +156,8 @@ class Game extends React.Component {
                 squares: Array(9).fill(null),
             }],
             xIsNext: true,
+            
+            // So since we are implementing the ability to revert back to a specific step we have to keep track of those steps with a counter therefore we declare a key called step number that will keep track of that for us
             stepNumber: 0
         };
     }
@@ -181,12 +183,19 @@ class Game extends React.Component {
     squares[i] = this.state.xIsNext ? 'X' : 'O';
    
     this.setState({
+        // The reason we are calling set state in this function is because we want to after every click set that state of the board and there are properties here that we are going to discuss now so we instantiate a key caled history and what that does is that history you can think of as an array of boards each array representing a time in history for every moves therefore we concatenate the history array with the how the board looks 
         history: history.concat([{squares: squares}]),
+        
+        // Without any tampering to the step number counter we set the step number variable to the length of the history and the reason we set it to the length of the history because that is actually the latest move and we have to keep the momentum of the game to keep happening 
         stepNumber: history.length,
+        
+        // We then take the xIsNext toggle and set it to what ever the current states move position is for example the only way we can know whether or not xIsNext is true or not is that we have to take a look at the current state and see whether x or not is being updated TODO When we call this state do we have to write all the key value pairs
         xIsNext: !this.state.xIsNext,
       });
   }
     
+    
+    // We have declared this jump to function and what it does is that is allows us to jump to a step or a specific part of history and we are going to go over how that is possible so first things first we take in the argument step and what we do with this argument is that we call this .setState and we set the counter of the step number to the step that the user is trying to get back to and then we toggle to the xIsNextSwitch to the move that is up at that point in time
     jumpTo(step) {
         this.setState ({
             stepNumber: step,
@@ -211,6 +220,7 @@ class Game extends React.Component {
                                 'Go to game start';
           return (
             <li key={move}>
+            <!-- The reason we know which step to move back to is because of the move argument that we are passing into the jump function therefore we can move back to that button-->
             <button onClick={() => this.jumpTo(move)}>{desc}</button>
         </li>
           )
