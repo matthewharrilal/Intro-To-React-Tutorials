@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
     
     <style>
+/*
         body {
             font-family: Helvetica;
             height: 100%;
@@ -23,28 +24,54 @@
             background-color: #FAD8D6
         }
         
+*/
+        
+        body {
+            background-color: #FAD8D6
+        }
+        
+/*
+        .game-board {
+            position: fixed;
+            align-items: center;
+            top: 50%;
+            left: 50%;
+            height: 200%;
+            width: 200%;
+        }
+*/
+        
         .game-info {
             margin: : 0;
             padding: 0;
-            text-align: center;
-            padding-right: 10px;
-            border-radius: 3px;
+            font-size: 30px;
+        }
+        
+        .game-board {
+            height: : 200px;
+            width: 200px;
+            align-items: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            
         }
         
 
         .border-row {
-            border: 1px solid #000
+/*            border: 1px solid #000*/
             width: 40px;
             height: 40px;
             display: inline-block;
 /*            margin: 2px;*/
-            border-radius: 3px;
+/*            border-radius: 3px;*/
         }
         
         .square {
             height: 40px;
             width: 40px;
             display: inline-block;
+            font-weight: bold;
         }
         
         
@@ -157,15 +184,41 @@ class Game extends React.Component {
         };
     }
     
-    
 
+    findRow(currentPosition) {
+      if (currentPosition >= 0 && currentPosition <= 3) {
+                  return "Row 1"
+              }
+     else if (currentPosition >= 4 && currentPosition <= 6) {
+                      return "Row 2"
+                  }
+    else {
+                      return "Row 3"
+                  }
+  }  
+    
+    findColumn(currentPosition) {
+        if (currentPosition === 1 || currentPosition === 4 || currentPosition === 7) {
+            return "Column 1"
+        }
+        
+        else if (currentPosition === 2 || currentPosition === 5 || currentPosition === 8) {
+            return "Column 2"
+        }
+        
+        else {
+            return "Column 3"
+        }
+    }
+  
   handleClick(i) {
     // So lets explain what is actually going on in this code and why it actually matters therefore the objective is to be able to store the history of the game and the way we are doing that is thatwe are accessing the initalixer and accessing the history and initially the history is just going to be a board with 9 null filled sqaures 
       
     // We then declare a variable called current and what that does is that it allows us to access the history array which we have to remember is just 9 null squares we are taking the length of the array and indexing the history array with that item
     const history = this.state.history;
     const current = history[history.length - 1];
-      
+    const currentPosition = i + 1;
+
     // To store the board we are creating the array of sqaures everytime with the moves so we can accurately track the history of all the moves 
     const squares = current.squares.slice();
       
@@ -173,13 +226,19 @@ class Game extends React.Component {
       if (calculateWinner(squares) || squares[i]) {
           return;
       } 
+      
+     
     
     // We are taking the current board and the reason I say that is because as I said earlier to accurately track the history we have to index in on the current squares and track whether the user is an x or an o and display the correct message to them depending so we are toggling the xIsNext variable we have up there 
     squares[i] = this.state.xIsNext ? 'X' : 'O';
+    console.log(this.findRow(currentPosition) + " " + this.findColumn(currentPosition) + " " + currentPosition)
+    
    
     this.setState({
         // The reason we are calling set state in this function is because we want to after every click set that state of the board and there are properties here that we are going to discuss now so we instantiate a key caled history and what that does is that history you can think of as an array of boards each array representing a time in history for every moves therefore we concatenate the history array with the how the board looks 
         history: history.concat([{squares: squares}]),
+        lastClickedRow: this.findRow(currentPosition),
+        lastClickedColumn: this.findColumn(currentPosition),
         
         // Without any tampering to the step number counter we set the step number variable to the length of the history and the reason we set it to the length of the history because that is actually the latest move and we have to keep the momentum of the game to keep happening 
         stepNumber: history.length,
@@ -223,6 +282,7 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className="game-board">
+      <div> {this.state.lastClickedRow} {this.state.lastClickedColumn} </div> 
           <Board 
               squares = {current.squares}
               onClick = {(i) => this.handleClick(i)}
@@ -230,7 +290,7 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol id='moveList'>{moves}</ol>
+          <ol className='moveList'>{moves}</ol>
         </div>
       </div>
     );
