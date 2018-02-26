@@ -8,13 +8,61 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
     
     <style>
+        /* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+        
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
 /*
         body {
             font-family: Helvetica;
             height: 100%;
             position: fixed;
             font-size: 18px;
-            display: flex;
             justify-content: center;
             align-items: : center;
             top: 50%;
@@ -59,12 +107,12 @@
         
 
         .border-row {
-/*            border: 1px solid #000*/
+            border: 1px solid #000
             width: 40px;
             height: 40px;
             display: inline-block;
-/*            margin: 2px;*/
-/*            border-radius: 3px;*/
+            margin: 2px;
+            border-radius: 3px;
         }
         
         .square {
@@ -274,7 +322,7 @@ class Game extends React.Component {
                                 'Go to game start';
           return (
             <li key={move}>
-            <button onClick={() => this.jumpTo(move)}>{desc}</button>
+            <button onClick={() => this.jumpTo(move)}><strong>{desc}</strong></button>
         </li>
           )
       });
@@ -285,7 +333,7 @@ class Game extends React.Component {
       <div> {this.state.lastClickedRow} {this.state.lastClickedColumn} </div> 
           <Board 
               squares = {current.squares}
-              onClick = {(i) => this.handleClick(i)}
+              onClick =  {(i) => this.handleClick(i)}
               />
         </div>
         <div className="game-info">
