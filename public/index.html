@@ -155,16 +155,21 @@ class Game extends React.Component {
             history: [{
                 squares: Array(9).fill(null),
             }],
-            xIsNext: true
+            xIsNext: true,
+            stepNumber: 0
         };
     }
     
     
-     // This handle click function that we are called and what is happening is that we are passing in an argument called i and on the first line of the function body what we are doing is that we are
-  // creating a constant called squares and we are making a shallow copy of the squares through the slice method therefore we can have a constant that we can manipulate
+
   handleClick(i) {
+    // So lets explain what is actually going on in this code and why it actually matters therefore the objective is to be able to store the history of the game and the way we are doing that is thatwe are accessing the initalixer and accessing the history and initially the history is just going to be a board with 9 null filled sqaures 
+      
+    // We then declare a variable called current and what that does is that it allows us to access the history array which we have to remember is just 9 null squares we are taking the length of the array and indexing the history array with that item
     const history = this.state.history;
     const current = history[history.length - 1];
+      
+    // To store the board we are creating the array of sqaures everytime with the moves so we can accurately track the history of all the moves 
     const squares = current.squares.slice();
       
       
@@ -172,22 +177,45 @@ class Game extends React.Component {
           return;
       } 
     
-    // Since i the argument represents the square on the board that the user has clicked on we set that value to X to signify that the user has clicked on the board
+    // We are taking the current board and the reason I say that is because as I said earlier to accurately track the history we have to index in on the current squares and track whether the user is an x or an o and display the correct message to them depending so we are toggling the xIsNext variable we have up there 
     squares[i] = this.state.xIsNext ? 'X' : 'O';
-    // And now we save the state inside the board as oppose to how we were doing it previously which is setting the set in the square idividually which will essentially overwrite the other squares where as if we were to set the state for the whole board we can continue making the game and programatically how we are doing this is that we are calling this set state function and we are passing in the list of squares that we have just previously updated with the current squares list
-    
-    // And we have also stored another key value pair and what this key value pair essentially does is that we are storing xIsNext which is a boolean value that is set to true and then if that is set to true then what we can do from there is set that value to false therefore the value will not be x anymore but we have not declared what that value will be
+   
     this.setState({
         history: history.concat([{squares: squares}]),
+        stepNumber: history.length,
         xIsNext: !this.state.xIsNext,
       });
   }
     
+    jumpTo(step) {
+        this.setState ({
+            stepNumber: step,
+            xIsNext: (step % 2) === 0
+        })
+    }
+    
     
   render() {
+      
+      // We are redclaring all these variables here for the sole reason that the handle click function is looking at each individual move and making pushing a new array of squares that represent the history onto the stack where as what we are doing in the render function is to be able to look at the whole boards status 
       const history = this.state.history;
-      const current = history[history.length - 1];
+      
+      // We find the current square or the current move rather and what we do with it is we find the array or the history that the square is contained in because it is essentially the last move and we calculate the winner based off of those squares
+      const current = history[this.state.stepNumber];
       const winner = calculateWinner(current.squares)
+      
+      // We declare this moves constant and what it does is that it returns us a list of moves that have been made already
+      // Every move we are instantiating a button and what that button does is that it is going to allow us to jump to that move basically like rewriting history so we have to implement that functionality
+      const moves = history.map((step, move) => {
+          const desc = move ? 'Go to move #' + move:
+                                'Go to game start';
+          return (
+            <li key={move}>
+            <button onClick={() => this.jumpTo(move)}>{desc}</button>
+        </li>
+          )
+      });
+      
     return (
       <div className="game">
         <div className="game-board">
@@ -198,7 +226,7 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{/* TODO */}</ol>
+          <ol>{moves}</ol>
         </div>
       </div>
     );
